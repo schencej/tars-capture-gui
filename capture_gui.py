@@ -116,18 +116,13 @@ class CaptureGUI:
         await asyncio.sleep(0.1)
 
     async def record_all(self):
-        with self.state as s:
-            s.waiting_for_record_start = True
-        await asyncio.sleep(0.1)
-
-        # TODO: add this
-        await asyncio.sleep(2)
-        s.waiting_for_record_start = False
-        await asyncio.sleep(0.1)
+        self.state.recording = True
+        asyncio.ensure_future(self.socket_server.emit('start_capture', 'all'))
 
     def stop_all(self):
         # TODO: add this
         self.state.recording = False
+        asyncio.ensure_future(self.socket_server.emit('stop_capture', 'all'))
 
     def get_ui(self):
         with SinglePageLayout(self.server) as main_page:
